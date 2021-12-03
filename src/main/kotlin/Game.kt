@@ -1,4 +1,5 @@
 import java.lang.Exception
+import kotlin.random.Random
 
 var board = arrayListOf<ArrayList<String>>()
 
@@ -47,6 +48,17 @@ fun main() {
                     println("It's a bloody tie!")
                     continueGame = false
                 }
+
+                if (continueGame) {
+                    placeComputerMove()
+                    displayBoard()
+                    val computerWon = checkWinner(false)
+
+                    if (computerWon) {
+                        println("Computer won")
+                        continueGame = false
+                    }
+                }
             }
         } catch (e: Exception) {
             println("Invalid input")
@@ -56,14 +68,14 @@ fun main() {
 
 fun checkWinner(player: Boolean): Boolean {
     var won = false
-    val checkSymbol = if(player) "X" else "O"
+    val checkSymbol = if (player) "X" else "O"
     for (i in 0..2) {
         if (board[i][0] == checkSymbol && board[i][1] == checkSymbol && board[i][2] == checkSymbol) {
             won = true
             break
         }
 
-        if (board[0][i] == checkSymbol && board[1][i] == checkSymbol && board[0][i] == checkSymbol) {
+        if (board[0][i] == checkSymbol && board[1][i] == checkSymbol && board[2][i] == checkSymbol) {
             won = true
             break
         }
@@ -86,6 +98,19 @@ fun checkBoardFull(): Boolean {
             }
         }
     }
+
+    return isBoardFull
+}
+
+fun placeComputerMove() {
+    var x = 0
+    var y = 0
+    do {
+        x = Random.nextInt(until = 3)
+        y = Random.nextInt(until = 3)
+    } while (board[x][y].isNotEmpty())
+
+    board[x][y] = "O"
 }
 
 fun displayBoard() {
