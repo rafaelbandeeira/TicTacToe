@@ -24,17 +24,68 @@ fun main() {
             val positions = input.split(",")
             x = positions[0].trim().toInt()
             y = positions[1].trim().toInt()
+            var skipRound = false
 
-            if (board[x-1][y-1].isNotEmpty())
+            if (board[x-1][y-1].isNotEmpty()) {
                 println("Position already taken, try again")
+                skipRound = true
+            }
             else {
                 board[x-1][y-1] = "X"
                 displayBoard()
+            }
+
+            if (!skipRound) {
+                val playerWon = checkWinner(true)
+                if (playerWon) {
+                    println("You won, mate!")
+                    continueGame = false
+                }
+
+                val isBoardFull = checkBoardFull()
+                if (!playerWon && isBoardFull) {
+                    println("It's a bloody tie!")
+                    continueGame = false
+                }
             }
         } catch (e: Exception) {
             println("Invalid input")
         }
     } while (continueGame)
+}
+
+fun checkWinner(player: Boolean): Boolean {
+    var won = false
+    val checkSymbol = if(player) "X" else "O"
+    for (i in 0..2) {
+        if (board[i][0] == checkSymbol && board[i][1] == checkSymbol && board[i][2] == checkSymbol) {
+            won = true
+            break
+        }
+
+        if (board[0][i] == checkSymbol && board[1][i] == checkSymbol && board[0][i] == checkSymbol) {
+            won = true
+            break
+        }
+    }
+    if (board[0][0] == checkSymbol && board[1][1] == checkSymbol && board[2][2] == checkSymbol)
+        won = true
+    if (board[0][2] == checkSymbol && board[1][1] == checkSymbol && board[2][0] == checkSymbol)
+        won = true
+
+    return won
+}
+
+fun checkBoardFull(): Boolean {
+    var isBoardFull = true
+    for (x in 0..2) {
+        for (y in 0..2) {
+            if (board[x][y].isEmpty()) {
+                isBoardFull = false
+                break
+            }
+        }
+    }
 }
 
 fun displayBoard() {
